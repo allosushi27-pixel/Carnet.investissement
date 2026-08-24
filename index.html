@@ -9,7 +9,7 @@
 
 :root {
   --accent: #3B82F6; --accent-2: #60A5FA; --accent-soft: #15234A;
-  --bg: #0A0E1A; --bg-2: #0D1326; --card: #111834; --border: #212B4B;
+  --bg: #0A0E1A; --card: #111834; --border: #212B4B;
   --text: #EAEEFB; --text-soft: #8C97BC;
   --success: #22D3A5; --success-soft: #062E29;
   --danger: #F87171; --danger-soft: #3B0F14;
@@ -48,6 +48,13 @@ body {
 .invx-tagline { display: flex; gap: 10px; align-items: center; font-size: 11.5px; font-weight: 600; color: var(--accent-2); letter-spacing: 0.02em; }
 .invx-tagline span:not(:last-child)::after { content: "•"; margin-left: 10px; color: var(--border); }
 
+.invx-filter-row { display: flex; gap: 8px; flex-wrap: wrap; max-width: 760px; margin: 0 auto 14px; }
+.invx-filter-chip {
+  background: var(--card); border: 1px solid var(--border); border-radius: 999px; color: var(--text-soft);
+  font-family: inherit; font-size: 12.5px; font-weight: 600; padding: 7px 14px; cursor: pointer;
+}
+.invx-filter-chip-active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-2); }
+
 .invx-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 760px; margin: 0 auto 28px; }
 .invx-summary-card {
   background: var(--card); border: 1px solid var(--border); border-radius: 14px;
@@ -69,12 +76,17 @@ body {
   box-shadow: 0 0 20px -6px var(--accent);
 }
 
-.invx-card-head { display: flex; align-items: baseline; gap: 10px; padding-right: 64px; margin-bottom: 16px; }
+.invx-card-head { display: flex; align-items: baseline; gap: 10px; padding-right: 64px; margin-bottom: 8px; }
 .invx-name { font-size: 18px; font-weight: 700; margin: 0; cursor: text; border-bottom: 1px dashed transparent; }
 .invx-name:hover { border-bottom-color: var(--border); }
-.invx-name-input { font-size: 18px; font-weight: 700; background: transparent; border: none; border-bottom: 1.5px solid var(--accent); padding: 0; width: 100%; color: var(--text); font-family: inherit; }
-.invx-name-input:focus { outline: none; }
-.invx-remove-partner { background: none; border: none; color: var(--text-soft); font-size: 11.5px; cursor: pointer; text-decoration: underline; white-space: nowrap; }
+.invx-name-edit { margin-bottom: 16px; }
+.invx-name-input { font-size: 16px; font-weight: 700; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; width: 100%; color: var(--text); font-family: inherit; margin-bottom: 8px; }
+.invx-name-input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+.invx-name-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.invx-save-btn { font-family: inherit; font-size: 12.5px; font-weight: 600; background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 7px 14px; cursor: pointer; }
+.invx-cancel-btn { font-family: inherit; font-size: 12.5px; font-weight: 600; background: none; color: var(--text-soft); border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px; cursor: pointer; }
+.invx-delete-partner-btn { font-family: inherit; font-size: 12.5px; font-weight: 600; background: var(--danger-soft); color: var(--danger); border: 1px solid var(--danger); border-radius: 8px; padding: 7px 14px; cursor: pointer; }
+.invx-mb16 { margin-bottom: 16px; }
 
 .invx-progress-track { height: 7px; background: var(--bg); border-radius: 999px; margin-bottom: 16px; overflow: hidden; }
 .invx-progress-fill { height: 100%; background: linear-gradient(90deg, var(--success), #34D399); transition: width 0.4s ease; border-radius: 999px; }
@@ -103,14 +115,24 @@ body {
 .invx-add-btn:hover { opacity: 0.9; }
 
 .invx-empty { color: var(--text-soft); font-size: 13px; margin: 0; }
-.invx-list { list-style: none; margin: 0; padding: 0; max-height: 220px; overflow-y: auto; }
-.invx-list-row { display: grid; grid-template-columns: 72px 1fr 18px; grid-template-areas: "date amount del" "note note del"; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.invx-list { list-style: none; margin: 0; padding: 0; max-height: 260px; overflow-y: auto; }
+.invx-list-row { display: grid; grid-template-columns: 72px 1fr 22px; grid-template-areas: "date amount edit" "note note edit"; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
 .invx-list-row:last-child { border-bottom: none; }
 .invx-list-date { grid-area: date; color: var(--text-soft); font-size: 11.5px; font-weight: 500; }
 .invx-list-amount { grid-area: amount; text-align: right; font-size: 13.5px; font-weight: 600; }
 .invx-list-note { grid-area: note; color: var(--text-soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.invx-delete-btn { grid-area: del; background: none; border: none; color: var(--text-soft); font-size: 16px; line-height: 1; cursor: pointer; opacity: 0.5; }
-.invx-delete-btn:hover { opacity: 1; color: var(--danger); }
+.invx-edit-btn { grid-area: edit; background: none; border: none; color: var(--text-soft); font-size: 14px; line-height: 1; cursor: pointer; opacity: 0.6; }
+.invx-edit-btn:hover { opacity: 1; color: var(--accent-2); }
+
+.invx-edit-row { padding: 10px 0; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; }
+.invx-edit-row:last-child { border-bottom: none; }
+.invx-edit-row-inputs { display: flex; gap: 8px; }
+.invx-edit-row-inputs input { flex: 1; min-width: 0; font-family: inherit; font-size: 13px; padding: 7px 9px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); color-scheme: dark; }
+.invx-edit-row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.invx-edit-row-actions button { font-family: inherit; font-size: 12px; font-weight: 600; border-radius: 7px; padding: 6px 12px; cursor: pointer; border: none; }
+.invx-row-save { background: var(--accent); color: #fff; }
+.invx-row-delete { background: var(--danger-soft); color: var(--danger); border: 1px solid var(--danger) !important; }
+.invx-row-cancel { background: none; color: var(--text-soft); border: 1px solid var(--border) !important; }
 
 .invx-footer { margin: 28px auto 0; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
 .invx-ghost-btn { background: var(--card); border: 1px solid var(--border); border-radius: 10px; color: var(--text-soft); font-family: inherit; font-size: 13px; font-weight: 600; padding: 9px 16px; cursor: pointer; }
@@ -131,7 +153,7 @@ body {
 .invx-tab-body { padding: 20px; overflow-y: auto; }
 
 .invx-history-full { max-height: 340px; }
-.invx-list-row-full { grid-template-columns: 64px 74px 90px 1fr auto; grid-template-areas: "date type partner amount note"; font-size: 12px; }
+.invx-list-row-full { grid-template-columns: 64px 74px 90px 1fr; grid-template-areas: "date type partner amount note"; font-size: 12px; }
 .invx-list-type { grid-area: type; font-size: 10.5px; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; }
 .invx-list-type.apport { color: var(--success); }
 .invx-list-type.retrait { color: var(--danger); }
@@ -160,7 +182,7 @@ body {
 <div id="root"></div>
 
 <script>
-const STORAGE_KEY = "invest-ledger-autonome-v3";
+const STORAGE_KEY = "invest-ledger-autonome-v4";
 
 const uid = () => Math.random().toString(36).slice(2, 10);
 const todayISO = () => new Date().toISOString().slice(0, 10);
@@ -194,8 +216,7 @@ function loadData() {
       parsed.partners = (parsed.partners || []).map(migratePartner);
       return parsed;
     }
-    // récupère les données de l'ancienne version si elles existent
-    for (const oldKey of ["invest-ledger-autonome-v2", "invest-ledger-autonome-v1"]) {
+    for (const oldKey of ["invest-ledger-autonome-v3", "invest-ledger-autonome-v2", "invest-ledger-autonome-v1"]) {
       const oldRaw = localStorage.getItem(oldKey);
       if (oldRaw) {
         const parsed = JSON.parse(oldRaw);
@@ -229,13 +250,32 @@ function esc(str) {
 }
 
 let state = loadData();
-let ui = { settingsOpen: false, settingsTab: "history", editingNameFor: null, resetError: false, cardTab: {} };
+let ui = {
+  settingsOpen: false, settingsTab: "history",
+  editingNameFor: null,
+  editingApport: null,      // { partnerId, itemId }
+  editingWithdrawal: null,  // { partnerId, itemId }
+  cardTab: {},
+  summaryFilter: "all",
+};
 function getCardTab(id) { return ui.cardTab[id] || "apports"; }
 
 function render() {
-  const totalEngaged = state.partners.reduce((s, p) => s + totalApports(p), 0);
-  const totalOut = state.partners.reduce((s, p) => s + totalWithdrawn(p), 0);
+  const filteredPartners = ui.summaryFilter === "all"
+    ? state.partners
+    : state.partners.filter((p) => p.id === ui.summaryFilter);
+
+  const totalEngaged = filteredPartners.reduce((s, p) => s + totalApports(p), 0);
+  const totalOut = filteredPartners.reduce((s, p) => s + totalWithdrawn(p), 0);
   const totalRemaining = totalEngaged - totalOut;
+
+  const filterHTML = `
+    <div class="invx-filter-row">
+      <button class="invx-filter-chip ${ui.summaryFilter === "all" ? "invx-filter-chip-active" : ""}" data-action="set-filter" data-filter="all">Tous</button>
+      ${state.partners.map((p) => `
+        <button class="invx-filter-chip ${ui.summaryFilter === p.id ? "invx-filter-chip-active" : ""}" data-action="set-filter" data-filter="${p.id}">${esc(p.name)}</button>
+      `).join("")}
+    </div>`;
 
   const summaryHTML = `
     <section class="invx-summary">
@@ -268,6 +308,7 @@ function render() {
       <p class="invx-subtitle">Apports engagés et prélèvements de chaque associé, pour suivre ce qu'il reste à récupérer.</p>
       <div class="invx-tagline"><span>Suivi en temps réel</span><span>Sécurisé sur l'appareil</span><span>Simple</span></div>
     </header>
+    ${filterHTML}
     ${summaryHTML}
     <section class="invx-ledger">${cardsHTML}</section>
     <footer class="invx-footer">
@@ -278,6 +319,24 @@ function render() {
   `;
 }
 
+function editRowHTML(kind, partnerId, item) {
+  return `
+    <div class="invx-edit-row">
+      <div class="invx-edit-row-inputs">
+        <input type="date" data-role="${kind}-edit-date" value="${item.date}" />
+        <input type="number" min="0" data-role="${kind}-edit-amount" value="${item.amount}" />
+      </div>
+      <div class="invx-edit-row-inputs">
+        <input type="text" data-role="${kind}-edit-note" value="${esc(item.note)}" placeholder="Note" />
+      </div>
+      <div class="invx-edit-row-actions">
+        <button class="invx-row-save" data-action="save-${kind}" data-id="${partnerId}" data-wid="${item.id}">Enregistrer</button>
+        <button class="invx-row-delete" data-action="delete-${kind}" data-id="${partnerId}" data-wid="${item.id}">Supprimer</button>
+        <button class="invx-row-cancel" data-action="cancel-edit-${kind}">Annuler</button>
+      </div>
+    </div>`;
+}
+
 function partnerCardHTML(p) {
   const engaged = totalApports(p);
   const withdrawn = totalWithdrawn(p);
@@ -286,35 +345,53 @@ function partnerCardHTML(p) {
   const overrun = engaged > 0 && withdrawn > engaged;
   const tab = getCardTab(p.id);
 
-  const nameHTML = ui.editingNameFor === p.id
-    ? `<input class="invx-name-input" data-role="name-input" data-id="${p.id}" value="${esc(p.name)}" />`
-    : `<h2 class="invx-name" data-action="edit-name" data-id="${p.id}">${esc(p.name)}</h2>`;
-
-  const removeBtn = state.partners.length > 2
-    ? `<button class="invx-remove-partner" data-action="remove-partner" data-id="${p.id}">retirer</button>` : "";
+  let nameHTML;
+  if (ui.editingNameFor === p.id) {
+    nameHTML = `
+      <div class="invx-name-edit invx-mb16">
+        <input class="invx-name-input" data-role="name-input" data-id="${p.id}" value="${esc(p.name)}" />
+        <div class="invx-name-actions">
+          <button class="invx-save-btn" data-action="save-name" data-id="${p.id}">Enregistrer</button>
+          <button class="invx-cancel-btn" data-action="cancel-edit-name">Annuler</button>
+          ${state.partners.length > 2 ? `<button class="invx-delete-partner-btn" data-action="remove-partner" data-id="${p.id}">Supprimer cet associé</button>` : ""}
+        </div>
+      </div>`;
+  } else {
+    nameHTML = `<div class="invx-card-head"><h2 class="invx-name" data-action="edit-name" data-id="${p.id}">${esc(p.name)}</h2></div>`;
+  }
 
   const sortedApports = [...p.apports].sort((a, b) => b.date.localeCompare(a.date));
   const sortedWithdrawals = [...p.withdrawals].sort((a, b) => b.date.localeCompare(a.date));
 
   const apportsRows = sortedApports.length === 0
     ? `<p class="invx-empty">Aucun apport enregistré pour l'instant.</p>`
-    : `<ul class="invx-list">${sortedApports.map((a) => `
+    : `<ul class="invx-list">${sortedApports.map((a) => {
+        if (ui.editingApport && ui.editingApport.partnerId === p.id && ui.editingApport.itemId === a.id) {
+          return `<li>${editRowHTML("apport", p.id, a)}</li>`;
+        }
+        return `
         <li class="invx-list-row">
           <span class="invx-list-date">${formatDateFR(a.date)}</span>
           <span class="invx-list-amount invx-success">+ ${formatDA(a.amount)}</span>
           <span class="invx-list-note">${esc(a.note)}</span>
-          <button class="invx-delete-btn" data-action="delete-apport" data-id="${p.id}" data-wid="${a.id}" aria-label="Supprimer">×</button>
-        </li>`).join("")}</ul>`;
+          <button class="invx-edit-btn" data-action="edit-apport" data-id="${p.id}" data-wid="${a.id}" aria-label="Modifier">✎</button>
+        </li>`;
+      }).join("")}</ul>`;
 
   const retraitsRows = sortedWithdrawals.length === 0
     ? `<p class="invx-empty">Aucun prélèvement enregistré pour l'instant.</p>`
-    : `<ul class="invx-list">${sortedWithdrawals.map((w) => `
+    : `<ul class="invx-list">${sortedWithdrawals.map((w) => {
+        if (ui.editingWithdrawal && ui.editingWithdrawal.partnerId === p.id && ui.editingWithdrawal.itemId === w.id) {
+          return `<li>${editRowHTML("withdrawal", p.id, w)}</li>`;
+        }
+        return `
         <li class="invx-list-row">
           <span class="invx-list-date">${formatDateFR(w.date)}</span>
           <span class="invx-list-amount invx-danger">− ${formatDA(w.amount)}</span>
           <span class="invx-list-note">${esc(w.note)}</span>
-          <button class="invx-delete-btn" data-action="delete-withdrawal" data-id="${p.id}" data-wid="${w.id}" aria-label="Supprimer">×</button>
-        </li>`).join("")}</ul>`;
+          <button class="invx-edit-btn" data-action="edit-withdrawal" data-id="${p.id}" data-wid="${w.id}" aria-label="Modifier">✎</button>
+        </li>`;
+      }).join("")}</ul>`;
 
   const apportsSection = `
     <form class="invx-form" data-role="apport-form" data-id="${p.id}">
@@ -345,7 +422,7 @@ function partnerCardHTML(p) {
   return `
     <article class="invx-card">
       <div class="invx-stamp">${pct}%</div>
-      <div class="invx-card-head">${nameHTML}${removeBtn}</div>
+      ${nameHTML}
 
       <div class="invx-progress-track">
         <div class="invx-progress-fill ${overrun ? "invx-progress-over" : ""}" style="width:${pct}%"></div>
@@ -413,6 +490,13 @@ function settingsModalHTML() {
     </div>`;
 }
 
+function readEditFields(kind) {
+  const date = document.querySelector(`[data-role="${kind}-edit-date"]`).value;
+  const amount = Number(document.querySelector(`[data-role="${kind}-edit-amount"]`).value);
+  const note = document.querySelector(`[data-role="${kind}-edit-note"]`).value.trim();
+  return { date, amount, note };
+}
+
 function onClick(e) {
   const overlay = e.target.closest("[data-action='close-settings']");
   if (overlay && !e.target.closest("[data-stop]")) {
@@ -434,6 +518,8 @@ function onClick(e) {
   }
   else if (action === "remove-partner") {
     state.partners = state.partners.filter((p) => p.id !== btn.dataset.id);
+    if (ui.summaryFilter === btn.dataset.id) ui.summaryFilter = "all";
+    ui.editingNameFor = null;
     saveData(); render();
   }
   else if (action === "edit-name") {
@@ -441,24 +527,55 @@ function onClick(e) {
     const input = document.querySelector(`[data-role="name-input"][data-id="${btn.dataset.id}"]`);
     if (input) { input.focus(); input.select(); }
   }
+  else if (action === "save-name") {
+    const input = document.querySelector(`[data-role="name-input"][data-id="${btn.dataset.id}"]`);
+    const p = state.partners.find((x) => x.id === btn.dataset.id);
+    if (p && input) p.name = input.value.trim() || p.name;
+    ui.editingNameFor = null; saveData(); render();
+  }
+  else if (action === "cancel-edit-name") { ui.editingNameFor = null; render(); }
   else if (action === "set-card-tab") { ui.cardTab[btn.dataset.id] = btn.dataset.cardtab; render(); }
+  else if (action === "set-filter") { ui.summaryFilter = btn.dataset.filter; render(); }
+
+  else if (action === "edit-apport") { ui.editingApport = { partnerId: btn.dataset.id, itemId: btn.dataset.wid }; render(); }
+  else if (action === "cancel-edit-apport") { ui.editingApport = null; render(); }
+  else if (action === "save-apport") {
+    const { date, amount, note } = readEditFields("apport");
+    if (!amount || amount <= 0) return;
+    const p = state.partners.find((x) => x.id === btn.dataset.id);
+    const item = p && p.apports.find((a) => a.id === btn.dataset.wid);
+    if (item) { item.date = date; item.amount = amount; item.note = note; }
+    ui.editingApport = null; saveData(); render();
+  }
   else if (action === "delete-apport") {
     const p = state.partners.find((x) => x.id === btn.dataset.id);
     if (p) p.apports = p.apports.filter((a) => a.id !== btn.dataset.wid);
-    saveData(); render();
+    ui.editingApport = null; saveData(); render();
+  }
+
+  else if (action === "edit-withdrawal") { ui.editingWithdrawal = { partnerId: btn.dataset.id, itemId: btn.dataset.wid }; render(); }
+  else if (action === "cancel-edit-withdrawal") { ui.editingWithdrawal = null; render(); }
+  else if (action === "save-withdrawal") {
+    const { date, amount, note } = readEditFields("withdrawal");
+    if (!amount || amount <= 0) return;
+    const p = state.partners.find((x) => x.id === btn.dataset.id);
+    const item = p && p.withdrawals.find((w) => w.id === btn.dataset.wid);
+    if (item) { item.date = date; item.amount = amount; item.note = note; }
+    ui.editingWithdrawal = null; saveData(); render();
   }
   else if (action === "delete-withdrawal") {
     const p = state.partners.find((x) => x.id === btn.dataset.id);
     if (p) p.withdrawals = p.withdrawals.filter((w) => w.id !== btn.dataset.wid);
-    saveData(); render();
+    ui.editingWithdrawal = null; saveData(); render();
   }
+
   else if (action === "set-tab") { ui.settingsTab = btn.dataset.tab; ui.resetError = false; render(); }
   else if (action === "confirm-reset") {
     const input = document.getElementById("reset-confirm-input");
     const val = (input && input.value || "").trim().toUpperCase();
     if (val === "SUPPRIMER") {
       state = defaultData();
-      ui.settingsOpen = false; ui.settingsTab = "history"; ui.resetError = false;
+      ui.settingsOpen = false; ui.settingsTab = "history"; ui.resetError = false; ui.summaryFilter = "all";
       saveData(); render();
     } else {
       ui.resetError = true; render();
@@ -491,19 +608,9 @@ function onSubmit(e) {
   if (p) { p.withdrawals.unshift({ id: uid(), date: fd.get("date"), amount, note: (fd.get("note") || "").trim() }); saveData(); render(); }
 }
 
-function onFocusOut(e) {
-  const nameInput = e.target.closest && e.target.closest("[data-role='name-input']");
-  if (nameInput) {
-    const p = state.partners.find((x) => x.id === nameInput.dataset.id);
-    if (p) p.name = nameInput.value.trim() || p.name;
-    ui.editingNameFor = null; saveData(); render();
-  }
-}
-
 const rootEl = document.getElementById("root");
 rootEl.addEventListener("click", onClick);
 rootEl.addEventListener("submit", onSubmit);
-rootEl.addEventListener("focusout", onFocusOut, true);
 
 render();
 </script>
