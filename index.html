@@ -256,14 +256,14 @@ let ui = {
   editingApport: null,      // { partnerId, itemId }
   editingWithdrawal: null,  // { partnerId, itemId }
   cardTab: {},
-  summaryFilter: "all",
+  filterIds: null, // null = tous ; sinon tableau d'ids sélectionnés
 };
 function getCardTab(id) { return ui.cardTab[id] || "apports"; }
 
 function render() {
-  const filteredPartners = ui.summaryFilter === "all"
-    ? state.partners
-    : state.partners.filter((p) => p.id === ui.summaryFilter);
+  const activeFilterIds = ui.filterIds === null ? state.partners.map((p) => p.id) : ui.filterIds;
+  const filteredPartners = state.partners.filter((p) => activeFilterIds.includes(p.id));
+  const allActive = activeFilterIds.length === state.partners.length;
 
   const totalEngaged = filteredPartners.reduce((s, p) => s + totalApports(p), 0);
   const totalOut = filteredPartners.reduce((s, p) => s + totalWithdrawn(p), 0);
@@ -271,9 +271,9 @@ function render() {
 
   const filterHTML = `
     <div class="invx-filter-row">
-      <button class="invx-filter-chip ${ui.summaryFilter === "all" ? "invx-filter-chip-active" : ""}" data-action="set-filter" data-filter="all">Tous</button>
+      <button class="invx-filter-chip ${allActive ? "invx-filter-chip-active" : ""}" data-action="set-filter-all">Tous</button>
       ${state.partners.map((p) => `
-        <button class="invx-filter-chip ${ui.summaryFilter === p.id ? "invx-filter-chip-active" : ""}" data-action="set-filter" data-filter="${p.id}">${esc(p.name)}</button>
+        <button class="invx-filter-chip ${activeFilterIds.includes(p.id) ? "invx-filter-chip-active" : ""}" data-action="toggle-filter" data-filter="${p.id}">${esc(p.name)}</button>
       `).join("")}
     </div>`;
 
@@ -518,7 +518,7 @@ function onClick(e) {
   }
   else if (action === "remove-partner") {
     state.partners = state.partners.filter((p) => p.id !== btn.dataset.id);
-    if (ui.summaryFilter === btn.dataset.id) ui.summaryFilter = "all";
+    if (Array.isArray(ui.filterIds)) ui.filterIds = ui.filterIds.filter((x) => x !== btn.dataset.id);
     ui.editingNameFor = null;
     saveData(); render();
   }
@@ -535,7 +535,13 @@ function onClick(e) {
   }
   else if (action === "cancel-edit-name") { ui.editingNameFor = null; render(); }
   else if (action === "set-card-tab") { ui.cardTab[btn.dataset.id] = btn.dataset.cardtab; render(); }
-  else if (action === "set-filter") { ui.summaryFilter = btn.dataset.filter; render(); }
+  else if (action === "set-filter-all") { ui.filterIds = null; render(); }
+  else if (action === "toggle-filter") {
+    const id = btn.dataset.filter;
+    const current = ui.filterIds === null ? state.partners.map((p) => p.id) : [...ui.filterIds];
+    ui.filterIds = current.includes(id) ? current.filter((x) => x !== id) : [...current, id];
+    render();
+  }
 
   else if (action === "edit-apport") { ui.editingApport = { partnerId: btn.dataset.id, itemId: btn.dataset.wid }; render(); }
   else if (action === "cancel-edit-apport") { ui.editingApport = null; render(); }
@@ -575,7 +581,7 @@ function onClick(e) {
     const val = (input && input.value || "").trim().toUpperCase();
     if (val === "SUPPRIMER") {
       state = defaultData();
-      ui.settingsOpen = false; ui.settingsTab = "history"; ui.resetError = false; ui.summaryFilter = "all";
+      ui.settingsOpen = false; ui.settingsTab = "history"; ui.resetError = false; ui.filterIds = null;
       saveData(); render();
     } else {
       ui.resetError = true; render();
