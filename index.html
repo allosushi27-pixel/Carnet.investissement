@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Carnet d'investissement — Allo Sushi</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-  --accent: #4F46E5; --accent-soft: #EEF2FF;
-  --bg: #F6F7F9; --card: #FFFFFF; --border: #E5E7EB;
-  --text: #111827; --text-soft: #6B7280;
-  --success: #059669; --success-soft: #ECFDF5;
-  --danger: #DC2626; --danger-soft: #FEF2F2;
+  --accent: #3B82F6; --accent-2: #60A5FA; --accent-soft: #15234A;
+  --bg: #0A0E1A; --bg-2: #0D1326; --card: #111834; --border: #212B4B;
+  --text: #EAEEFB; --text-soft: #8C97BC;
+  --success: #22D3A5; --success-soft: #062E29;
+  --danger: #F87171; --danger-soft: #3B0F14;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; background: var(--bg); }
@@ -20,44 +20,52 @@ body {
   font-family: 'Inter', system-ui, sans-serif;
   color: var(--text);
   font-variant-numeric: tabular-nums;
-  transition: background 0.25s ease, color 0.25s ease;
+  background: radial-gradient(circle at 20% 0%, rgba(59,130,246,0.10), transparent 45%), var(--bg);
+  min-height: 100vh;
 }
 #root { padding: 36px 18px 56px; max-width: 980px; margin: 0 auto; }
 
-.invx-header { max-width: 760px; margin: 0 auto 28px; position: relative; }
-.invx-header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.invx-header { max-width: 760px; margin: 0 auto 28px; }
+.invx-header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
 .invx-logo-mark {
-  width: 38px; height: 38px; border-radius: 10px; background: var(--accent);
-  display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 15px;
+  width: 38px; height: 38px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 15px;
+  box-shadow: 0 0 24px -6px var(--accent);
 }
 .invx-settings-toggle {
   width: 36px; height: 36px; border-radius: 10px;
   border: 1px solid var(--border); background: var(--card); color: var(--text-soft);
   font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center;
 }
-.invx-settings-toggle:hover { color: var(--text); border-color: var(--text-soft); }
-.invx-title { font-weight: 800; font-size: clamp(24px, 3.6vw, 32px); margin: 0 0 6px; letter-spacing: -0.02em; }
-.invx-subtitle { color: var(--text-soft); font-size: 14px; margin: 0; line-height: 1.5; }
+.invx-settings-toggle:hover { color: var(--text); border-color: var(--accent); }
+.invx-title { font-weight: 800; font-size: clamp(24px, 3.6vw, 32px); margin: 0 0 8px; letter-spacing: -0.02em; }
+.invx-title .invx-title-accent {
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.invx-subtitle { color: var(--text-soft); font-size: 14px; margin: 0 0 12px; line-height: 1.5; }
+.invx-tagline { display: flex; gap: 10px; align-items: center; font-size: 11.5px; font-weight: 600; color: var(--accent-2); letter-spacing: 0.02em; }
+.invx-tagline span:not(:last-child)::after { content: "•"; margin-left: 10px; color: var(--border); }
 
 .invx-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 760px; margin: 0 auto 28px; }
 .invx-summary-card {
   background: var(--card); border: 1px solid var(--border); border-radius: 14px;
   padding: 16px 14px; display: flex; flex-direction: column; gap: 6px;
-  box-shadow: 0 1px 2px rgba(16,24,40,0.04);
 }
 .invx-summary-label { font-size: 11.5px; font-weight: 600; color: var(--text-soft); }
 .invx-summary-value { font-weight: 700; font-size: 18px; }
-.invx-accent { color: var(--accent); } .invx-danger { color: var(--danger); } .invx-success { color: var(--success); }
+.invx-accent { color: var(--accent-2); } .invx-danger { color: var(--danger); } .invx-success { color: var(--success); }
 
 .invx-ledger { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
 
 .invx-card {
   position: relative; background: var(--card); border: 1px solid var(--border); border-radius: 16px;
-  padding: 20px 20px 18px; box-shadow: 0 1px 2px rgba(16,24,40,0.04), 0 1px 3px rgba(16,24,40,0.06);
+  padding: 20px 20px 18px;
 }
 .invx-stamp {
   position: absolute; top: 18px; right: 18px; padding: 4px 10px; border-radius: 999px;
-  background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: 12px;
+  background: var(--accent-soft); color: var(--accent-2); font-weight: 700; font-size: 12px;
   box-shadow: 0 0 20px -6px var(--accent);
 }
 
@@ -69,7 +77,7 @@ body {
 .invx-remove-partner { background: none; border: none; color: var(--text-soft); font-size: 11.5px; cursor: pointer; text-decoration: underline; white-space: nowrap; }
 
 .invx-progress-track { height: 7px; background: var(--bg); border-radius: 999px; margin-bottom: 16px; overflow: hidden; }
-.invx-progress-fill { height: 100%; background: var(--success); transition: width 0.4s ease; border-radius: 999px; }
+.invx-progress-fill { height: 100%; background: linear-gradient(90deg, var(--success), #34D399); transition: width 0.4s ease; border-radius: 999px; }
 .invx-progress-over { background: var(--danger); }
 
 .invx-mini-stats { display: flex; justify-content: space-between; margin-bottom: 18px; gap: 10px; flex-wrap: wrap; }
@@ -79,19 +87,19 @@ body {
 
 .invx-card-tabs { display: flex; gap: 2px; margin-bottom: 14px; background: var(--bg); border-radius: 10px; padding: 3px; }
 .invx-card-tab { flex: 1; background: none; border: none; padding: 8px 6px; border-radius: 8px; font-family: inherit; font-size: 12.5px; font-weight: 600; color: var(--text-soft); cursor: pointer; }
-.invx-card-tab-active { background: var(--card); color: var(--text); box-shadow: 0 1px 2px rgba(16,24,40,0.08); }
+.invx-card-tab-active { background: var(--border); color: var(--text); }
 .invx-card-tab-active.invx-tab-apports { color: var(--success); }
 .invx-card-tab-active.invx-tab-retraits { color: var(--danger); }
 
 .invx-form { padding-top: 2px; margin-bottom: 14px; display: flex; flex-direction: column; gap: 8px; }
 .invx-form-row { display: flex; gap: 8px; }
 .invx-form-row input[type="date"], .invx-form-row input[type="number"], .invx-form-row input[type="text"] {
-  flex: 1; min-width: 0; font-family: inherit; font-size: 13.5px; padding: 8px 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text);
+  flex: 1; min-width: 0; font-family: inherit; font-size: 13.5px; padding: 8px 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); color-scheme: dark;
 }
 .invx-form-row input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
-.invx-add-btn { font-family: inherit; font-size: 13px; font-weight: 600; background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer; white-space: nowrap; box-shadow: 0 4px 14px -6px var(--accent); }
-.invx-add-btn.invx-add-apports { background: var(--success); }
-.invx-add-btn.invx-add-retraits { background: var(--danger); }
+.invx-add-btn { font-family: inherit; font-size: 13px; font-weight: 600; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer; white-space: nowrap; box-shadow: 0 4px 14px -6px var(--accent); }
+.invx-add-btn.invx-add-apports { background: linear-gradient(135deg, var(--success), #34D399); box-shadow: 0 4px 14px -6px var(--success); }
+.invx-add-btn.invx-add-retraits { background: linear-gradient(135deg, var(--danger), #EF4444); box-shadow: 0 4px 14px -6px var(--danger); }
 .invx-add-btn:hover { opacity: 0.9; }
 
 .invx-empty { color: var(--text-soft); font-size: 13px; margin: 0; }
@@ -106,10 +114,10 @@ body {
 
 .invx-footer { margin: 28px auto 0; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
 .invx-ghost-btn { background: var(--card); border: 1px solid var(--border); border-radius: 10px; color: var(--text-soft); font-family: inherit; font-size: 13px; font-weight: 600; padding: 9px 16px; cursor: pointer; }
-.invx-ghost-btn:hover { border-color: var(--text-soft); color: var(--text); }
+.invx-ghost-btn:hover { border-color: var(--accent); color: var(--text); }
 
-.invx-modal-overlay { position: fixed; inset: 0; background: rgba(17,24,39,0.5); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 50; }
-.invx-modal { background: var(--card); border-radius: 18px; max-width: 480px; width: 100%; max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(17,24,39,0.25); overflow: hidden; }
+.invx-modal-overlay { position: fixed; inset: 0; background: rgba(4,7,17,0.65); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 50; }
+.invx-modal { background: var(--card); border: 1px solid var(--border); border-radius: 18px; max-width: 480px; width: 100%; max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.5); overflow: hidden; }
 .invx-modal-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid var(--border); }
 .invx-modal-title { font-size: 17px; font-weight: 700; margin: 0; }
 .invx-modal-close { background: none; border: none; font-size: 20px; color: var(--text-soft); cursor: pointer; line-height: 1; }
@@ -118,15 +126,9 @@ body {
 .invx-tabs { display: flex; border-bottom: 1px solid var(--border); padding: 0 8px; }
 .invx-tab { flex: 1; background: none; border: none; padding: 12px 8px; font-family: inherit; font-size: 12.5px; font-weight: 600; color: var(--text-soft); cursor: pointer; border-bottom: 2px solid transparent; }
 .invx-tab:hover { color: var(--text); }
-.invx-tab-active { color: var(--accent); border-bottom-color: var(--accent); }
+.invx-tab-active { color: var(--accent-2); border-bottom-color: var(--accent); }
 .invx-tab-danger.invx-tab-active { color: var(--danger); border-bottom-color: var(--danger); }
 .invx-tab-body { padding: 20px; overflow-y: auto; }
-
-.invx-theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.invx-theme-option { display: flex; align-items: center; gap: 9px; padding: 11px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; text-align: left; }
-.invx-theme-option:hover { border-color: var(--text-soft); }
-.invx-theme-active { outline: 2px solid var(--accent); outline-offset: -1px; }
-.invx-theme-swatch { width: 16px; height: 16px; border-radius: 999px; flex-shrink: 0; }
 
 .invx-history-full { max-height: 340px; }
 .invx-list-row-full { grid-template-columns: 64px 74px 90px 1fr auto; grid-template-areas: "date type partner amount note"; font-size: 12px; }
@@ -158,15 +160,7 @@ body {
 <div id="root"></div>
 
 <script>
-const STORAGE_KEY = "invest-ledger-autonome-v2";
-
-const THEMES = {
-  indigo:  { label: "Indigo",   swatch: "#4F46E5", accent:"#4F46E5", accentSoft:"#EEF2FF", bg:"#F6F7F9", card:"#FFFFFF", border:"#E5E7EB", text:"#111827", textSoft:"#6B7280", success:"#059669", successSoft:"#ECFDF5", danger:"#DC2626", dangerSoft:"#FEF2F2" },
-  emerald: { label: "Émeraude", swatch: "#059669", accent:"#059669", accentSoft:"#ECFDF5", bg:"#F6F7F9", card:"#FFFFFF", border:"#E5E7EB", text:"#111827", textSoft:"#6B7280", success:"#0D9488", successSoft:"#F0FDFA", danger:"#DC2626", dangerSoft:"#FEF2F2" },
-  slate:   { label: "Ardoise",  swatch: "#475569", accent:"#475569", accentSoft:"#F1F5F9", bg:"#F6F7F9", card:"#FFFFFF", border:"#E5E7EB", text:"#111827", textSoft:"#6B7280", success:"#059669", successSoft:"#ECFDF5", danger:"#B91C1C", dangerSoft:"#FEF2F2" },
-  dark:    { label: "Sombre",   swatch: "#6366F1", accent:"#818CF8", accentSoft:"#312E81", bg:"#0F172A", card:"#1E293B", border:"#334155", text:"#F1F5F9", textSoft:"#94A3B8", success:"#34D399", successSoft:"#064E3B", danger:"#F87171", dangerSoft:"#450A0A" },
-  nova:    { label: "Nova (tech)", swatch: "#3B82F6", accent:"#3B82F6", accentSoft:"#15234A", bg:"#0A0E27", card:"#101836", border:"#1F2B4D", text:"#E7ECFA", textSoft:"#8C97B8", success:"#22D3A5", successSoft:"#062E29", danger:"#F87171", dangerSoft:"#3B0F14" },
-};
+const STORAGE_KEY = "invest-ledger-autonome-v3";
 
 const uid = () => Math.random().toString(36).slice(2, 10);
 const todayISO = () => new Date().toISOString().slice(0, 10);
@@ -174,7 +168,6 @@ const todayISO = () => new Date().toISOString().slice(0, 10);
 function defaultData() {
   return {
     restaurantName: "Allo Sushi",
-    theme: "indigo",
     partners: [
       { id: uid(), name: "Toi", apports: [], withdrawals: [] },
       { id: uid(), name: "Ton oncle", apports: [], withdrawals: [] },
@@ -199,8 +192,17 @@ function loadData() {
     if (raw) {
       const parsed = JSON.parse(raw);
       parsed.partners = (parsed.partners || []).map(migratePartner);
-      if (!THEMES[parsed.theme]) parsed.theme = "indigo";
       return parsed;
+    }
+    // récupère les données de l'ancienne version si elles existent
+    for (const oldKey of ["invest-ledger-autonome-v2", "invest-ledger-autonome-v1"]) {
+      const oldRaw = localStorage.getItem(oldKey);
+      if (oldRaw) {
+        const parsed = JSON.parse(oldRaw);
+        parsed.partners = (parsed.partners || []).map(migratePartner);
+        delete parsed.theme;
+        return parsed;
+      }
     }
   } catch (e) {}
   return defaultData();
@@ -227,29 +229,10 @@ function esc(str) {
 }
 
 let state = loadData();
-let ui = {
-  settingsOpen: false, settingsTab: "appearance", editingNameFor: null, resetError: false, cardTab: {},
-};
+let ui = { settingsOpen: false, settingsTab: "history", editingNameFor: null, resetError: false, cardTab: {} };
 function getCardTab(id) { return ui.cardTab[id] || "apports"; }
 
-function applyTheme() {
-  const t = THEMES[state.theme] || THEMES.indigo;
-  const root = document.documentElement;
-  root.style.setProperty("--accent", t.accent);
-  root.style.setProperty("--accent-soft", t.accentSoft);
-  root.style.setProperty("--bg", t.bg);
-  root.style.setProperty("--card", t.card);
-  root.style.setProperty("--border", t.border);
-  root.style.setProperty("--text", t.text);
-  root.style.setProperty("--text-soft", t.textSoft);
-  root.style.setProperty("--success", t.success);
-  root.style.setProperty("--success-soft", t.successSoft);
-  root.style.setProperty("--danger", t.danger);
-  root.style.setProperty("--danger-soft", t.dangerSoft);
-}
-
 function render() {
-  applyTheme();
   const totalEngaged = state.partners.reduce((s, p) => s + totalApports(p), 0);
   const totalOut = state.partners.reduce((s, p) => s + totalWithdrawn(p), 0);
   const totalRemaining = totalEngaged - totalOut;
@@ -281,8 +264,9 @@ function render() {
         <div class="invx-logo-mark">AS</div>
         <button class="invx-settings-toggle" data-action="open-settings" title="Paramètres">⚙</button>
       </div>
-      <h1 class="invx-title">Carnet d'investissement — ${esc(state.restaurantName)}</h1>
+      <h1 class="invx-title">Carnet d'investissement <span class="invx-title-accent">${esc(state.restaurantName)}</span></h1>
       <p class="invx-subtitle">Apports engagés et prélèvements de chaque associé, pour suivre ce qu'il reste à récupérer.</p>
+      <div class="invx-tagline"><span>Suivi en temps réel</span><span>Sécurisé sur l'appareil</span><span>Simple</span></div>
     </header>
     ${summaryHTML}
     <section class="invx-ledger">${cardsHTML}</section>
@@ -388,14 +372,7 @@ function settingsModalHTML() {
   const tab = ui.settingsTab;
   let body = "";
 
-  if (tab === "appearance") {
-    body = `<div class="invx-theme-grid">
-      ${Object.entries(THEMES).map(([key, t]) => `
-        <button class="invx-theme-option ${state.theme === key ? "invx-theme-active" : ""}" data-action="set-theme" data-theme="${key}">
-          <span class="invx-theme-swatch" style="background:${t.swatch}"></span>${t.label}
-        </button>`).join("")}
-    </div>`;
-  } else if (tab === "history") {
+  if (tab === "history") {
     const allApports = state.partners.flatMap((p) => p.apports.map((a) => ({ ...a, partnerName: p.name, type: "apport" })));
     const allRetraits = state.partners.flatMap((p) => p.withdrawals.map((w) => ({ ...w, partnerName: p.name, type: "retrait" })));
     const all = [...allApports, ...allRetraits].sort((a, b) => b.date.localeCompare(a.date));
@@ -428,7 +405,6 @@ function settingsModalHTML() {
           <button class="invx-modal-close" data-action="close-settings" aria-label="Fermer">×</button>
         </div>
         <div class="invx-tabs">
-          <button class="invx-tab ${tab === "appearance" ? "invx-tab-active" : ""}" data-action="set-tab" data-tab="appearance">Apparence</button>
           <button class="invx-tab ${tab === "history" ? "invx-tab-active" : ""}" data-action="set-tab" data-tab="history">Historique complet</button>
           <button class="invx-tab invx-tab-danger ${tab === "danger" ? "invx-tab-active" : ""}" data-action="set-tab" data-tab="danger">Zone sensible</button>
         </div>
@@ -440,11 +416,11 @@ function settingsModalHTML() {
 function onClick(e) {
   const overlay = e.target.closest("[data-action='close-settings']");
   if (overlay && !e.target.closest("[data-stop]")) {
-    ui.settingsOpen = false; ui.settingsTab = "appearance"; ui.resetError = false; render(); return;
+    ui.settingsOpen = false; ui.settingsTab = "history"; ui.resetError = false; render(); return;
   }
   const modalInner = e.target.closest(".invx-modal");
   if (modalInner && e.target.closest("[data-action='close-settings']")) {
-    ui.settingsOpen = false; ui.settingsTab = "appearance"; ui.resetError = false; render(); return;
+    ui.settingsOpen = false; ui.settingsTab = "history"; ui.resetError = false; render(); return;
   }
 
   const btn = e.target.closest("[data-action]");
@@ -476,15 +452,13 @@ function onClick(e) {
     if (p) p.withdrawals = p.withdrawals.filter((w) => w.id !== btn.dataset.wid);
     saveData(); render();
   }
-  else if (action === "set-theme") { state.theme = btn.dataset.theme; saveData(); render(); }
   else if (action === "set-tab") { ui.settingsTab = btn.dataset.tab; ui.resetError = false; render(); }
   else if (action === "confirm-reset") {
     const input = document.getElementById("reset-confirm-input");
     const val = (input && input.value || "").trim().toUpperCase();
     if (val === "SUPPRIMER") {
-      const keepTheme = state.theme;
-      state = defaultData(); state.theme = keepTheme;
-      ui.settingsOpen = false; ui.settingsTab = "appearance"; ui.resetError = false;
+      state = defaultData();
+      ui.settingsOpen = false; ui.settingsTab = "history"; ui.resetError = false;
       saveData(); render();
     } else {
       ui.resetError = true; render();
