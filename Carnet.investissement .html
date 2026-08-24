@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Carnet d'investissement — Allo Sushi</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+:root {
+  --ink: #211D17; --ink-soft: #74695A; --paper: #F5EEDD; --paper-alt: #ECE0C4;
+  --seal: #A6332A; --moss: #4F6B45; --brass: #A9832E; --line: #D8C9A0;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--paper); }
+body {
+  font-family: 'Work Sans', system-ui, sans-serif;
+  color: var(--ink);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+#root { padding: 40px 20px 56px; max-width: 960px; margin: 0 auto; }
+
+.invx-loading { display:flex; align-items:center; justify-content:center; min-height:240px; color:var(--ink-soft); font-style:italic; }
+
+.invx-header { max-width: 760px; margin: 0 auto 32px; text-align: center; position: relative; }
+.invx-settings-toggle {
+  position: absolute; top: -4px; right: 0; width: 34px; height: 34px; border-radius: 50%;
+  border: 1px solid var(--line); background: var(--paper-alt); color: var(--ink-soft);
+  font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.invx-settings-toggle:hover { color: var(--ink); border-color: var(--ink-soft); }
+.invx-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--seal); margin-bottom: 10px; }
+.invx-title { font-family: 'Shippori Mincho', serif; font-weight: 700; font-size: clamp(28px, 4vw, 42px); margin: 0 0 10px; }
+.invx-subtitle { color: var(--ink-soft); font-size: 14.5px; margin: 0; line-height: 1.5; }
+
+.invx-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); max-width: 760px; margin: 0 auto 36px; border: 1px solid var(--line); }
+.invx-summary-card { background: var(--paper); padding: 16px 14px; display: flex; flex-direction: column; gap: 6px; align-items: center; text-align: center; }
+.invx-summary-label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+.invx-summary-value { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 17px; }
+.invx-brass { color: var(--brass); } .invx-seal { color: var(--seal); } .invx-moss { color: var(--moss); }
+
+.invx-ledger { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+
+.invx-card { position: relative; background: var(--paper-alt); border: 1px solid var(--line); border-left: 3px dashed var(--line); padding: 22px 22px 20px; }
+.invx-stamp { position: absolute; top: 18px; right: 18px; width: 46px; height: 46px; border-radius: 50%; border: 2px solid var(--seal); color: var(--seal); display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 12px; transform: rotate(-8deg); opacity: 0.85; }
+
+.invx-card-head { display: flex; align-items: baseline; gap: 10px; padding-right: 56px; margin-bottom: 14px; }
+.invx-name { font-family: 'Shippori Mincho', serif; font-size: 21px; font-weight: 700; margin: 0; cursor: text; border-bottom: 1px dashed transparent; }
+.invx-name:hover { border-bottom-color: var(--line); }
+.invx-name-input { font-family: 'Shippori Mincho', serif; font-size: 21px; font-weight: 700; background: transparent; border: none; border-bottom: 1px solid var(--ink-soft); padding: 0; width: 100%; color: var(--ink); }
+.invx-name-input:focus { outline: none; }
+.invx-remove-partner { background: none; border: none; color: var(--ink-soft); font-size: 11px; cursor: pointer; text-decoration: underline; white-space: nowrap; }
+
+.invx-engaged-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.invx-field-label { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); }
+.invx-engaged-value { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 16px; color: var(--brass); background: none; border: none; border-bottom: 1px dashed transparent; cursor: pointer; padding: 0; }
+.invx-engaged-value:hover { border-bottom-color: var(--brass); }
+.invx-engaged-input { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 16px; width: 130px; text-align: right; background: var(--paper); border: 1px solid var(--line); padding: 4px 8px; color: var(--ink); }
+
+.invx-progress-track { height: 6px; background: var(--paper); border: 1px solid var(--line); margin-bottom: 14px; overflow: hidden; }
+.invx-progress-fill { height: 100%; background: var(--moss); transition: width 0.4s ease; }
+.invx-progress-over { background: var(--seal); }
+
+.invx-mini-stats { display: flex; justify-content: space-between; margin-bottom: 18px; gap: 12px; }
+.invx-mini-stats > div { display: flex; flex-direction: column; gap: 3px; }
+.invx-mini-stats .invx-mono { font-size: 15px; font-weight: 600; }
+
+.invx-form { border-top: 1px solid var(--line); padding-top: 14px; margin-bottom: 14px; display: flex; flex-direction: column; gap: 8px; }
+.invx-form-row { display: flex; gap: 8px; }
+.invx-form-row input[type="date"], .invx-form-row input[type="number"], .invx-form-row input[type="text"] {
+  flex: 1; min-width: 0; font-family: 'Work Sans', sans-serif; font-size: 13.5px; padding: 7px 9px; background: var(--paper); border: 1px solid var(--line); color: var(--ink);
+}
+.invx-form-row input:focus { outline: 1px solid var(--brass); }
+.invx-add-btn { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; font-weight: 600; letter-spacing: 0.03em; background: var(--ink); color: var(--paper); border: none; padding: 7px 14px; cursor: pointer; white-space: nowrap; }
+.invx-add-btn:hover { background: var(--seal); }
+
+.invx-empty { color: var(--ink-soft); font-size: 13px; font-style: italic; margin: 0; }
+.invx-list { list-style: none; margin: 0; padding: 0; max-height: 260px; overflow-y: auto; }
+.invx-list-row { display: grid; grid-template-columns: 72px 1fr 18px; grid-template-areas: "date amount del" "note note del"; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+.invx-list-row:last-child { border-bottom: none; }
+.invx-list-date { grid-area: date; color: var(--ink-soft); font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; }
+.invx-list-amount { grid-area: amount; text-align: right; font-size: 13.5px; }
+.invx-list-note { grid-area: note; color: var(--ink-soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.invx-delete-btn { grid-area: del; background: none; border: none; color: var(--ink-soft); font-size: 16px; line-height: 1; cursor: pointer; opacity: 0.5; }
+.invx-delete-btn:hover { opacity: 1; color: var(--seal); }
+
+.invx-footer { margin: 32px auto 0; display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+.invx-ghost-btn { background: none; border: 1px solid var(--line); color: var(--ink-soft); font-family: 'Work Sans', sans-serif; font-size: 12.5px; padding: 8px 14px; cursor: pointer; }
+.invx-ghost-btn:hover { border-color: var(--ink-soft); color: var(--ink); }
+
+.invx-modal-overlay { position: fixed; inset: 0; background: rgba(30,26,20,0.45); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 50; }
+.invx-modal { background: var(--paper); border: 1px solid var(--line); max-width: 480px; width: 100%; max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 12px 32px rgba(0,0,0,0.18); }
+.invx-modal-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; border-bottom: 1px solid var(--line); }
+.invx-modal-title { font-family: 'Shippori Mincho', serif; font-size: 18px; margin: 0; }
+.invx-modal-close { background: none; border: none; font-size: 20px; color: var(--ink-soft); cursor: pointer; line-height: 1; }
+.invx-modal-close:hover { color: var(--seal); }
+
+.invx-tabs { display: flex; border-bottom: 1px solid var(--line); }
+.invx-tab { flex: 1; background: none; border: none; padding: 10px 8px; font-family: 'Work Sans', sans-serif; font-size: 12px; color: var(--ink-soft); cursor: pointer; border-bottom: 2px solid transparent; }
+.invx-tab:hover { color: var(--ink); }
+.invx-tab-active { color: var(--ink); border-bottom-color: var(--brass); font-weight: 600; }
+.invx-tab-danger.invx-tab-active { border-bottom-color: var(--seal); }
+.invx-tab-body { padding: 18px; overflow-y: auto; }
+
+.invx-theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.invx-theme-option { display: flex; align-items: center; gap: 9px; padding: 10px 12px; border: 1px solid var(--line); background: var(--paper-alt); color: var(--ink); font-family: 'Work Sans', sans-serif; font-size: 13px; cursor: pointer; width: 100%; text-align: left; }
+.invx-theme-option:hover { border-color: var(--ink-soft); }
+.invx-theme-active { outline: 2px solid var(--brass); outline-offset: -1px; }
+.invx-theme-swatch { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; }
+
+.invx-history-full { max-height: 340px; }
+.invx-list-row-full { grid-template-columns: 64px 90px 1fr auto; grid-template-areas: "date partner amount note"; font-size: 12.5px; }
+.invx-list-partner { grid-area: partner; color: var(--ink-soft); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.invx-list-row-full .invx-list-note { white-space: normal; font-size: 12px; }
+
+.invx-danger-panel { padding: 0; border: none; background: none; }
+.invx-danger-text { font-size: 12.5px; color: var(--ink-soft); line-height: 1.5; margin: 0 0 12px; }
+.invx-danger-text strong { color: var(--seal); letter-spacing: 0.04em; }
+.invx-danger-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.invx-danger-input { font-family: 'IBM Plex Mono', monospace; font-size: 13px; padding: 7px 9px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); width: 140px; }
+.invx-danger-error { color: var(--seal); font-size: 12px; margin-top: 8px; }
+.invx-danger-confirm { font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; background: var(--seal); color: var(--paper); border: none; padding: 7px 12px; cursor: pointer; }
+.invx-danger-confirm:hover { opacity: 0.85; }
+
+.invx-storage-note { text-align:center; font-size: 11px; color: var(--ink-soft); margin-top: 40px; }
+
+@media (max-width: 640px) {
+  #root { padding: 28px 16px 44px; }
+  .invx-summary { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+const STORAGE_KEY = "invest-ledger-autonome-v1";
+
+const THEMES = {
+  washi:  { label: "Washi",        swatch: "#A6332A", ink:"#211D17", inkSoft:"#74695A", paper:"#F5EEDD", paperAlt:"#ECE0C4", seal:"#A6332A", moss:"#4F6B45", brass:"#A9832E", line:"#D8C9A0" },
+  ai:     { label: "Ai (indigo)",  swatch: "#2C3A66", ink:"#1B2340", inkSoft:"#5B6485", paper:"#EDEFF5", paperAlt:"#DEE2EE", seal:"#B23A48", moss:"#3C6E62", brass:"#5F6E93", line:"#C7CCDE" },
+  matcha: { label: "Matcha",       swatch: "#4B6B3A", ink:"#28321F", inkSoft:"#65735A", paper:"#EFF1E1", paperAlt:"#E1E5CB", seal:"#9C4A3C", moss:"#4B6B3A", brass:"#8C9B4E", line:"#CBD3AE" },
+  sumi:   { label: "Sumi (encre)", swatch: "#3A3A3A", ink:"#1E1E1E", inkSoft:"#6B6B6B", paper:"#EFEFEC", paperAlt:"#E0E0DB", seal:"#7A3B3B", moss:"#4A4A4A", brass:"#5A5A5A", line:"#CFCFC9" },
+};
+
+const uid = () => Math.random().toString(36).slice(2, 10);
+const todayISO = () => new Date().toISOString().slice(0, 10);
+
+function defaultData() {
+  return {
+    restaurantName: "Allo Sushi",
+    theme: "washi",
+    partners: [
+      { id: uid(), name: "Toi", engaged: 0, withdrawals: [] },
+      { id: uid(), name: "Ton oncle", engaged: 0, withdrawals: [] },
+    ],
+  };
+}
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return defaultData();
+}
+
+function saveData() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (e) {
+    console.error("Sauvegarde impossible :", e);
+  }
+}
+
+function formatDA(n) {
+  const v = Math.round(Number(n) || 0);
+  return `${v.toLocaleString("fr-FR")} DA`;
+}
+function formatDateFR(iso) {
+  if (!iso) return "";
+  const [y, m, d] = iso.split("-");
+  return `${d}/${m}/${y}`;
+}
+function totalWithdrawn(p) {
+  return p.withdrawals.reduce((s, w) => s + (Number(w.amount) || 0), 0);
+}
+function esc(str) {
+  return String(str || "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+}
+
+let state = loadData();
+let ui = {
+  settingsOpen: false,
+  settingsTab: "appearance",
+  editingNameFor: null,
+  editingEngagedFor: null,
+  resetError: false,
+};
+
+function applyTheme() {
+  const t = THEMES[state.theme] || THEMES.washi;
+  const root = document.documentElement;
+  root.style.setProperty("--ink", t.ink);
+  root.style.setProperty("--ink-soft", t.inkSoft);
+  root.style.setProperty("--paper", t.paper);
+  root.style.setProperty("--paper-alt", t.paperAlt);
+  root.style.setProperty("--seal", t.seal);
+  root.style.setProperty("--moss", t.moss);
+  root.style.setProperty("--brass", t.brass);
+  root.style.setProperty("--line", t.line);
+}
+
+function render() {
+  applyTheme();
+  const totalEngaged = state.partners.reduce((s, p) => s + (Number(p.engaged) || 0), 0);
+  const totalOut = state.partners.reduce((s, p) => s + totalWithdrawn(p), 0);
+  const totalRemaining = totalEngaged - totalOut;
+
+  const summaryHTML = `
+    <section class="invx-summary">
+      <div class="invx-summary-card">
+        <span class="invx-summary-label">Total engagé</span>
+        <span class="invx-summary-value invx-brass">${formatDA(totalEngaged)}</span>
+      </div>
+      <div class="invx-summary-card">
+        <span class="invx-summary-label">Total prélevé</span>
+        <span class="invx-summary-value invx-seal">${formatDA(totalOut)}</span>
+      </div>
+      <div class="invx-summary-card">
+        <span class="invx-summary-label">Reste à récupérer</span>
+        <span class="invx-summary-value ${totalRemaining < 0 ? "invx-seal" : "invx-moss"}">
+          ${formatDA(Math.abs(totalRemaining))}${totalRemaining < 0 ? " en trop" : ""}
+        </span>
+      </div>
+    </section>`;
+
+  const cardsHTML = state.partners.map((p) => partnerCardHTML(p)).join("");
+
+  const settingsHTML = ui.settingsOpen ? settingsModalHTML() : "";
+
+  document.getElementById("root").innerHTML = `
+    <header class="invx-header">
+      <button class="invx-settings-toggle" data-action="open-settings" title="Paramètres">⚙</button>
+      <div class="invx-eyebrow">Carnet d'investissement</div>
+      <h1 class="invx-title">${esc(state.restaurantName)}</h1>
+      <p class="invx-subtitle">Apports engagés et prélèvements de chaque associé, pour suivre ce qu'il reste à récupérer.</p>
+    </header>
+    ${summaryHTML}
+    <section class="invx-ledger">${cardsHTML}</section>
+    <footer class="invx-footer">
+      <button class="invx-ghost-btn" data-action="add-partner">+ Ajouter un associé</button>
+    </footer>
+    <p class="invx-storage-note">Données enregistrées uniquement sur cet appareil, dans ce navigateur.</p>
+    ${settingsHTML}
+  `;
+
+  attachHandlers();
+}
+
+function partnerCardHTML(p) {
+  const withdrawn = totalWithdrawn(p);
+  const engaged = Number(p.engaged) || 0;
+  const remaining = engaged - withdrawn;
+  const pct = engaged > 0 ? Math.min(100, Math.round((withdrawn / engaged) * 100)) : 0;
+  const overrun = engaged > 0 && withdrawn > engaged;
+  const sorted = [...p.withdrawals].sort((a, b) => b.date.localeCompare(a.date));
+
+  const nameHTML = ui.editingNameFor === p.id
+    ? `<input class="invx-name-input" data-role="name-input" data-id="${p.id}" value="${esc(p.name)}" />`
+    : `<h2 class="invx-name" data-action="edit-name" data-id="${p.id}">${esc(p.name)}</h2>`;
+
+  const engagedHTML = ui.editingEngagedFor === p.id
+    ? `<input class="invx-engaged-input" type="number" min="0" data-role="engaged-input" data-id="${p.id}" value="${engaged || ""}" />`
+    : `<button class="invx-engaged-value" data-action="edit-engaged" data-id="${p.id}">${formatDA(engaged)}</button>`;
+
+  const removeBtn = state.partners.length > 2
+    ? `<button class="invx-remove-partner" data-action="remove-partner" data-id="${p.id}">retirer</button>`
+    : "";
+
+  const rows = sorted.length === 0
+    ? `<p class="invx-empty">Aucun prélèvement enregistré pour l'instant.</p>`
+    : `<ul class="invx-list">${sorted.map((w) => `
+        <li class="invx-list-row">
+          <span class="invx-list-date">${formatDateFR(w.date)}</span>
+          <span class="invx-list-amount invx-mono">− ${formatDA(w.amount)}</span>
+          <span class="invx-list-note">${esc(w.note)}</span>
+          <button class="invx-delete-btn" data-action="delete-withdrawal" data-id="${p.id}" data-wid="${w.id}" aria-label="Supprimer">×</button>
+        </li>`).join("")}</ul>`;
+
+  return `
+    <article class="invx-card">
+      <div class="invx-stamp" title="Taux de récupération"><span>${pct}%</span></div>
+      <div class="invx-card-head">${nameHTML}${removeBtn}</div>
+      <div class="invx-engaged-row">
+        <span class="invx-field-label">Apport engagé</span>
+        ${engagedHTML}
+      </div>
+      <div class="invx-progress-track">
+        <div class="invx-progress-fill ${overrun ? "invx-progress-over" : ""}" style="width:${pct}%"></div>
+      </div>
+      <div class="invx-mini-stats">
+        <div>
+          <span class="invx-field-label">Prélevé</span>
+          <span class="invx-mono invx-seal">${formatDA(withdrawn)}</span>
+        </div>
+        <div>
+          <span class="invx-field-label">${remaining < 0 ? "Surplus" : "Reste à récupérer"}</span>
+          <span class="invx-mono ${remaining < 0 ? "invx-seal" : "invx-moss"}">${formatDA(Math.abs(remaining))}</span>
+        </div>
+      </div>
+      <form class="invx-form" data-role="withdrawal-form" data-id="${p.id}">
+        <div class="invx-form-row">
+          <input type="date" name="date" value="${todayISO()}" required />
+          <input type="number" name="amount" min="0" placeholder="Montant" required />
+        </div>
+        <div class="invx-form-row">
+          <input type="text" name="note" placeholder="Note (facultatif)" />
+          <button type="submit" class="invx-add-btn">Enregistrer</button>
+        </div>
+      </form>
+      <div class="invx-history">${rows}</div>
+    </article>`;
+}
+
+function settingsModalHTML() {
+  const tab = ui.settingsTab;
+  let body = "";
+
+  if (tab === "appearance") {
+    body = `<div class="invx-theme-grid">
+      ${Object.entries(THEMES).map(([key, t]) => `
+        <button class="invx-theme-option ${state.theme === key ? "invx-theme-active" : ""}" data-action="set-theme" data-theme="${key}">
+          <span class="invx-theme-swatch" style="background:${t.swatch}"></span>${t.label}
+        </button>`).join("")}
+    </div>`;
+  } else if (tab === "history") {
+    const all = state.partners.flatMap((p) => p.withdrawals.map((w) => ({ ...w, partnerName: p.name })))
+      .sort((a, b) => b.date.localeCompare(a.date));
+    body = all.length === 0
+      ? `<p class="invx-empty">Aucun prélèvement enregistré pour l'instant.</p>`
+      : `<div class="invx-history-full"><ul class="invx-list">${all.map((w) => `
+          <li class="invx-list-row invx-list-row-full">
+            <span class="invx-list-date">${formatDateFR(w.date)}</span>
+            <span class="invx-list-partner">${esc(w.partnerName)}</span>
+            <span class="invx-list-amount invx-mono">− ${formatDA(w.amount)}</span>
+            <span class="invx-list-note">${esc(w.note)}</span>
+          </li>`).join("")}</ul></div>`;
+  } else if (tab === "danger") {
+    body = `<div class="invx-danger-panel">
+      <p class="invx-danger-text">Ceci efface définitivement les associés, les apports et tous les prélèvements enregistrés sur cet appareil. Tape <strong>SUPPRIMER</strong> ci-dessous pour confirmer.</p>
+      <div class="invx-danger-row">
+        <input type="text" class="invx-danger-input" id="reset-confirm-input" placeholder="SUPPRIMER" />
+        <button class="invx-danger-confirm" data-action="confirm-reset">Effacer le carnet</button>
+      </div>
+      ${ui.resetError ? `<p class="invx-danger-error">Le mot tapé ne correspond pas à "SUPPRIMER".</p>` : ""}
+    </div>`;
+  }
+
+  return `
+    <div class="invx-modal-overlay" data-action="close-settings">
+      <div class="invx-modal" data-stop="1">
+        <div class="invx-modal-head">
+          <h3 class="invx-modal-title">Paramètres</h3>
+          <button class="invx-modal-close" data-action="close-settings" aria-label="Fermer">×</button>
+        </div>
+        <div class="invx-tabs">
+          <button class="invx-tab ${tab === "appearance" ? "invx-tab-active" : ""}" data-action="set-tab" data-tab="appearance">Apparence</button>
+          <button class="invx-tab ${tab === "history" ? "invx-tab-active" : ""}" data-action="set-tab" data-tab="history">Historique complet</button>
+          <button class="invx-tab invx-tab-danger ${tab === "danger" ? "invx-tab-active" : ""}" data-action="set-tab" data-tab="danger">Zone sensible</button>
+        </div>
+        <div class="invx-tab-body">${body}</div>
+      </div>
+    </div>`;
+}
+
+function attachHandlers() {
+  const root = document.getElementById("root");
+
+  root.addEventListener("click", onClick);
+  root.addEventListener("submit", onSubmit);
+  root.addEventListener("focusout", onFocusOut, true);
+
+  function onClick(e) {
+    const overlay = e.target.closest("[data-action='close-settings']");
+    if (overlay && !e.target.closest("[data-stop]")) {
+      ui.settingsOpen = false; ui.settingsTab = "appearance"; ui.resetError = false;
+      render(); return;
+    }
+    const modalInner = e.target.closest(".invx-modal");
+    if (modalInner && e.target.closest("[data-action='close-settings']")) {
+      ui.settingsOpen = false; ui.settingsTab = "appearance"; ui.resetError = false;
+      render(); return;
+    }
+
+    const btn = e.target.closest("[data-action]");
+    if (!btn) return;
+    const action = btn.dataset.action;
+
+    if (action === "open-settings") { ui.settingsOpen = true; render(); }
+    else if (action === "add-partner") {
+      state.partners.push({ id: uid(), name: `Associé ${state.partners.length + 1}`, engaged: 0, withdrawals: [] });
+      saveData(); render();
+    }
+    else if (action === "remove-partner") {
+      state.partners = state.partners.filter((p) => p.id !== btn.dataset.id);
+      saveData(); render();
+    }
+    else if (action === "edit-name") { ui.editingNameFor = btn.dataset.id; render();
+      const input = root.querySelector(`[data-role="name-input"][data-id="${btn.dataset.id}"]`);
+      if (input) { input.focus(); input.select(); }
+    }
+    else if (action === "edit-engaged") { ui.editingEngagedFor = btn.dataset.id; render();
+      const input = root.querySelector(`[data-role="engaged-input"][data-id="${btn.dataset.id}"]`);
+      if (input) { input.focus(); input.select(); }
+    }
+    else if (action === "delete-withdrawal") {
+      const p = state.partners.find((x) => x.id === btn.dataset.id);
+      if (p) p.withdrawals = p.withdrawals.filter((w) => w.id !== btn.dataset.wid);
+      saveData(); render();
+    }
+    else if (action === "set-theme") { state.theme = btn.dataset.theme; saveData(); render(); }
+    else if (action === "set-tab") { ui.settingsTab = btn.dataset.tab; ui.resetError = false; render(); }
+    else if (action === "confirm-reset") {
+      const input = document.getElementById("reset-confirm-input");
+      const val = (input && input.value || "").trim().toUpperCase();
+      if (val === "SUPPRIMER") {
+        const keepTheme = state.theme;
+        state = defaultData();
+        state.theme = keepTheme;
+        ui.settingsOpen = false; ui.settingsTab = "appearance"; ui.resetError = false;
+        saveData(); render();
+      } else {
+        ui.resetError = true; render();
+        const again = document.getElementById("reset-confirm-input");
+        if (again) again.focus();
+      }
+    }
+  }
+
+  function onSubmit(e) {
+    const form = e.target.closest("[data-role='withdrawal-form']");
+    if (!form) return;
+    e.preventDefault();
+    const pid = form.dataset.id;
+    const fd = new FormData(form);
+    const amount = Number(fd.get("amount"));
+    if (!amount || amount <= 0) return;
+    const p = state.partners.find((x) => x.id === pid);
+    if (p) {
+      p.withdrawals.unshift({ id: uid(), date: fd.get("date"), amount, note: (fd.get("note") || "").trim() });
+      saveData(); render();
+    }
+  }
+
+  function onFocusOut(e) {
+    const nameInput = e.target.closest && e.target.closest("[data-role='name-input']");
+    if (nameInput) {
+      const p = state.partners.find((x) => x.id === nameInput.dataset.id);
+      if (p) p.name = nameInput.value.trim() || p.name;
+      ui.editingNameFor = null;
+      saveData(); render();
+      return;
+    }
+    const engagedInput = e.target.closest && e.target.closest("[data-role='engaged-input']");
+    if (engagedInput) {
+      const p = state.partners.find((x) => x.id === engagedInput.dataset.id);
+      if (p) { const v = Number(engagedInput.value); p.engaged = isNaN(v) ? 0 : v; }
+      ui.editingEngagedFor = null;
+      saveData(); render();
+    }
+  }
+}
+
+render();
+</script>
+</body>
+</html>
